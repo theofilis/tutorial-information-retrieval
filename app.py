@@ -42,16 +42,30 @@ VERSION
 
     1
 """
+import matplotlib.pyplot as plt
 
 # Basic CSV IO
 def read_data(file_name):
     import pandas as pd
 
     df = pd.read_csv(file_name)
+    df = df.sort([' #word'], ascending=[0])
 
-    
+    ts = pd.Series(df[' #word'].values, index=[i for i in range(df[' #word'].count()) ])
 
+    plt.figure(1)
+    ts[0:100].plot()
+    plt.show()
 
+    plt.figure(2)
+    ts.cumsum().plot()
+    plt.show()
+
+    plt.figure(3)
+    def percent(x):
+        return (float(x) / ts.sum()) * 100
+    ts.cumsum().apply(percent).plot()
+    plt.show()
 def main ():
     read_data("data/index.csv")
 
