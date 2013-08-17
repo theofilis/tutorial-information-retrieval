@@ -54,7 +54,7 @@ def read_data(file_name):
     ts = pd.Series(df[' #word'].values, index=[i for i in range(df[' #word'].count()) ])
 
     plt.figure(1)
-    ts[0:100].plot()
+    ts.plot()
     plt.show()
 
     plt.figure(2)
@@ -66,6 +66,33 @@ def read_data(file_name):
         return (float(x) / ts.sum()) * 100
     ts.cumsum().apply(percent).plot()
     plt.show()
+
+    plt.figure(4)
+    for i, f in ts.iteritems():
+        ts[i] = (float(f * i * 100) / ts.sum() )   
+    ts.plot()
+    plt.show()
+
+    plt.figure(5)
+    ts[0:100].plot()
+    plt.show()
+
+    plt.figure(6)
+    ts[0:100].cumsum().plot()
+    plt.show()
+
+    plt.figure(7)
+    def percent(x):
+        return (float(x) / ts.sum()) * 100
+    ts[0:100].cumsum().apply(percent).plot()
+    plt.show()
+
+    plt.figure(8)
+    for i, f in ts.iteritems():
+        ts[i] = (float(f * i * 100) / ts.sum() )   
+    ts[0:100].plot()
+    plt.show()
+
 def main ():
     read_data("data/index.csv")
 
