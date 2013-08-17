@@ -43,6 +43,7 @@ VERSION
     1
 """
 import matplotlib.pyplot as plt
+import numpy as np
 
 # Basic CSV IO
 def read_data(file_name):
@@ -91,6 +92,12 @@ def read_data(file_name):
     for i, f in ts.iteritems():
         ts[i] = (float(f * i * 100) / ts.sum() )   
     ts[0:100].plot()
+    plt.show()
+
+    plt.figure(9)
+    ts = ts.apply(np.log)
+    ts.index = [ np.log(i) for i in ts.index]
+    ts.plot()
     plt.show()
 
 def main ():
