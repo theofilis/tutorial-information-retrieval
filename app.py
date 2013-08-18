@@ -50,9 +50,9 @@ def read_data(file_name):
     import pandas as pd
 
     df = pd.read_csv(file_name)
-    df = df.sort([' #word'], ascending=[0])
+    df = df.sort(['#word'], ascending=[0])
 
-    ts = pd.Series(df[' #word'].values, index=[i for i in range(df[' #word'].count()) ])
+    ts = pd.Series(df['#word'].values, index=[i for i in range(df['#word'].count()) ])
 
     plt.figure(1)
     ts.plot()
