@@ -1,6 +1,8 @@
 # Word Statistics
 
 All utilities program for Lesson Information Retrieval 2012-2013.
+1. app.py
+2. zipf_plot.py
 
 ## Requirements
 1. [pandas](pandas.pydata.org) pandas is an open source, BSD-licensed library providing high-performance, easy-to-use data structures and data analysis tools for the Python programming language.
