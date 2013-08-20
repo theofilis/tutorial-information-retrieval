@@ -1,6 +1,7 @@
 # Word Statistics
 
 All utilities program for Lesson Information Retrieval 2012-2013.
+
 1. app.py
 2. zipf_plot.py
 
