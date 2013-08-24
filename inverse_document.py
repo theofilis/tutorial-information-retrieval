@@ -44,8 +44,88 @@ VERSION
 """
 import matplotlib.pyplot as plt
 import numpy as np
-import pandas as pd
 import math
+
+class InvertedDocument:
+    def __init__(self, D):
+        self.data = {}
+        self.N = 0
+        self.normalize = {}
+
+        for i in D:
+            D[i] = D[i].split()
+            self.N += 1
+
+        for i in D:
+            for token in D[i]:
+                if token not in self.data:
+                    self.data[token] = { i : 1}
+                else:
+                    if i in self.data[token]:
+                        self.data[token][i] += 1
+                    else:
+                        self.data[token][i] = 1
+
+        d = []
+        for i in range(self.N):
+            for j, token in enumerate(self.data.keys()):
+                d += [self.w(token, i)]
+            self.normalize[i] = np.linalg.norm(d, 2)
+            d = []
+
+    def tf(self, t, d):
+        if d in self.data[t]:
+            return self.data[t][d]
+        else:
+            return 0
+
+    def df(self, t):
+        return len(self.data[t])
+
+    def idf(self, t):
+        def log2(x):
+            return math.log(float(x)) / math.log(2.0)
+        return log2(self.N) - log2(self.df(t))
+
+    def w(self, t, d):
+        return self.tf(t, d) * self.idf(t)
+
+    def dictionary(self):
+        return self.data.keys()
+
+    def norm(self, d):
+        return self.normalize[d]
+
+    def sim(self, q):
+        q = q.split()
+
+        Q = {}
+        for token in q:
+            if token in Q:
+                Q[token] += 1
+            else:
+                Q[token] = 1
+
+        n = np.linalg.norm(Q.values(), 2)
+
+        for t in Q:
+            Q[t] = Q[t] * self.idf(t) / n
+
+        sim = {}
+        for i in range(self.N):
+            sim[i] = 0
+            for t in Q:
+                sim[i] += Q[t] * self.w(t, i) / self.norm(i)
+
+        import operator
+        sim = sorted(sim.iteritems(), key=operator.itemgetter(1), reverse=True)
+        return sim
+
+
+def sim(self, d, q):
+    s = np.dot(q, d)
+    n = np.linalg.norm(q, 2) * np.linalg.norm(d, 2)  
+    return s[0] / n
 
 def main ():
     
@@ -57,59 +137,9 @@ def main ():
         3 : "On a runway at JFK waiting for a gate My daughter is playing with a Tinker Bell helium balloon http://4sq.com/18PSBXf"
     }
 
-    tf_df = {}
-    N = 0
+    index = InvertedDocument(D)
 
-    # Simple Tokenizer
-    for i in D:
-        D[i] = D[i].split()
-        N += 1
-
-    for i in D:
-        for token in D[i]:
-            if token not in tf_df:
-                tf_df[token] = [i]
-            else:
-                tf_df[token] += [i]
-
-    q = ['is']
-
-    VS = np.zeros((N, len(tf_df.keys())))
-    vq = np.zeros((1, len(tf_df.keys())))
-
-    for i in range(N):
-        for j, token in enumerate(tf_df.keys()):
-            VS[i, j] = w(tf_df, token, i, N)
-    
-    for j, token in enumerate(tf_df.keys()):
-        if token in q[0].split():
-            vq[0,j] =  idf(tf_df, token, N)
-
-    for i in range(N):
-        print sim(VS[i], vq)
-
-def sim(d, q):
-    s = np.dot(q, d)
-    n = np.linalg.norm(q, 2) * np.linalg.norm(d, 2)  
-    return s[0] / n
-
-
-def w(index, t, d, N):
-    return tf(index, t, d) * idf(index, t, N)
-
-def log2(x):
-    return math.log(float(x)) / math.log(2.0)
-
-def idf(index, t, N):
-    return log2(N) - log2(df(index, t))
-
-# get the df of a term
-def df(tf_df, term):
-    return len(set(tf_df[term]))
-
-# get the tf of a term on ducument
-def tf(tf_df, term, di):
-    return len([i for i in tf_df[term] if i==di])
+    print index.sim('JFK')
 
 if __name__ == '__main__':
     main()
