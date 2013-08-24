@@ -45,6 +45,7 @@ VERSION
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+import math
 
 def main ():
     
@@ -71,29 +72,44 @@ def main ():
             else:
                 tf_df[token] += [i]
 
+    q = ['is']
+
+    VS = np.zeros((N, len(tf_df.keys())))
+    vq = np.zeros((1, len(tf_df.keys())))
+
+    for i in range(N):
+        for j, token in enumerate(tf_df.keys()):
+            VS[i, j] = w(tf_df, token, i, N)
     
-    for term in tf_df:
-        print " df(%s) = %d" % df(tf_df, term)
+    for j, token in enumerate(tf_df.keys()):
+        if token in q[0].split():
+            vq[0,j] =  idf(tf_df, token, N)
 
-    print " tf(%s, %d) = %d" %  tf(tf_df, 'on', 0)
+    for i in range(N):
+        print sim(VS[i], vq)
 
-    q = ['Facebook']
+def sim(d, q):
+    s = np.dot(q, d)
+    n = np.linalg.norm(q, 2) * np.linalg.norm(d, 2)  
+    return s[0] / n
+
 
 def w(index, t, d, N):
     return tf(index, t, d) * idf(index, t, N)
 
+def log2(x):
+    return math.log(float(x)) / math.log(2.0)
+
 def idf(index, t, N):
-    return np.log2(N, df(index, t))
+    return log2(N) - log2(df(index, t))
 
 # get the df of a term
 def df(tf_df, term):
-    return (term, len(set(tf_df[term])))
+    return len(set(tf_df[term]))
 
 # get the tf of a term on ducument
 def tf(tf_df, term, di):
-    return term, di, len([i for i in tf_df[term] if i==di])
-
+    return len([i for i in tf_df[term] if i==di])
 
 if __name__ == '__main__':
     main()
-    
