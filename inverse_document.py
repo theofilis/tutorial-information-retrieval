@@ -57,10 +57,12 @@ def main ():
     }
 
     tf_df = {}
+    N = 0
 
     # Simple Tokenizer
     for i in D:
         D[i] = D[i].split()
+        N += 1
 
     for i in D:
         for token in D[i]:
@@ -74,6 +76,14 @@ def main ():
         print " df(%s) = %d" % df(tf_df, term)
 
     print " tf(%s, %d) = %d" %  tf(tf_df, 'on', 0)
+
+    q = ['Facebook']
+
+def w(index, t, d, N):
+    return tf(index, t, d) * idf(index, t, N)
+
+def idf(index, t, N):
+    return np.log2(N, df(index, t))
 
 # get the df of a term
 def df(tf_df, term):
