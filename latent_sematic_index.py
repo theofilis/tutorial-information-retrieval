@@ -111,9 +111,9 @@ def main ():
         3 : "On a runway at JFK waiting for a gate My daughter is playing with a Tinker Bell helium balloon http://4sq.com/18PSBXf"
     }
 
-    index = LatentSematicIndex(D, 4)
+    index = LatentSematicIndex(D, 2)
 
-    print index.sim("Facebook")
+    print index.sim("Twitter Facebook")
 
 if __name__ == '__main__':
     main()
